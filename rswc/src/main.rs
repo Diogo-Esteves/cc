@@ -4,7 +4,7 @@
 use std::env;
 use std::fs::{self, File};
 use std::path::Path;
-use std::io::BufRead;
+use std::io::{BufRead, BufReader};
 
 fn main() {
    let args: Vec<String> = env::args().collect();
@@ -12,7 +12,7 @@ fn main() {
     let (operation, file_path) = parse_config(&args);
     let path = Path::new(file_path);
     let file = File::open(path).unwrap();
-    let mut reader = std::io::BufReader::new(file);
+    let mut reader = BufReader::new(file);
 
     match operation {
         "-c" => println!("{} {}", file_size(path), file_path),
@@ -34,13 +34,13 @@ fn file_size(path: &Path) -> u64 {
     fs::metadata(path).unwrap().len()
 }
 
-fn lines(reader: &mut std::io::BufReader<File>) -> u64 {
+fn lines(reader: &mut BufReader<File>) -> u64 {
     let mut total_lines = 0;
     total_lines += reader.lines().count() as u64;
     total_lines
 }
 
-fn words(reader: &mut std::io::BufReader<File>) -> u64 {
+fn words(reader: &mut BufReader<File>) -> u64 {
     let mut total_words = 0;
     for line in reader.lines() {
         total_words += line.unwrap().split_whitespace().count() as u64;
@@ -48,10 +48,12 @@ fn words(reader: &mut std::io::BufReader<File>) -> u64 {
     total_words
 }
 
-fn chars(reader: &mut std::io::BufReader<File>) -> usize {
+fn chars(reader: &mut BufReader<File>) -> u64 {
     let mut total_chars = 0;
-    for line in reader.lines() {
-        total_chars += line.unwrap().chars().count();
+    let mut buffer = String::new();
+    while reader.read_line(&mut buffer).unwrap() > 0 {
+        total_chars += buffer.chars().count() as u64;
+        buffer.clear();
     }
     total_chars
 }
