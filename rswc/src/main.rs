@@ -58,3 +58,46 @@ fn chars(reader: &mut BufReader<File>) -> u64 {
     total_chars
 }
 
+// write unit tests for the functions above
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_parse_config() {
+        let args = vec![
+            String::from("word_counter"),
+            String::from("-c"),
+            String::from("test.txt"),
+        ];
+        assert_eq!(parse_config(&args), ("-c", "test.txt"));
+    }
+
+    #[test]
+    fn test_file_size() {
+        let path = Path::new("test.txt");
+        assert_eq!(file_size(path), 342190);
+    }
+
+    #[test]
+    fn test_lines() {
+        let file = File::open("test.txt").unwrap();
+        let mut reader = BufReader::new(file);
+        assert_eq!(lines(&mut reader), 7145);
+    }
+
+    #[test]
+    fn test_words() {
+        let file = File::open("test.txt").unwrap();
+        let mut reader = BufReader::new(file);
+        assert_eq!(words(&mut reader), 58164);
+    }
+
+    #[test]
+    fn test_chars() {
+        let file = File::open("test.txt").unwrap();
+        let mut reader = BufReader::new(file);
+        assert_eq!(chars(&mut reader), 339292);
+    }
+}
+
