@@ -25,4 +25,4 @@ The file of test should return:
 `-c test.txt` -> 342190
 `-l test.txt` -> 7145
 `-w test.txt` -> 58164
-`-mtest.txt` -> 339292
+`-m test.txt` -> 339292
